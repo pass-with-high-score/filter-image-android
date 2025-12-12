@@ -117,3 +117,88 @@ Java_com_pwhs_cnative_ImageProcessor_invert(JNIEnv *env, jobject, jobject bitmap
 
     AndroidBitmap_unlockPixels(env, bitmap);
 }
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_pwhs_cnative_ImageProcessor_brightnessContrast(
+        JNIEnv *env, jobject, jobject bitmap, jint brightness, jfloat contrast) {
+
+    AndroidBitmapInfo info;
+    void *pixels;
+    AndroidBitmap_getInfo(env, bitmap, &info);
+    AndroidBitmap_lockPixels(env, bitmap, &pixels);
+
+    auto *line = (uint32_t *) pixels;
+
+    for (int y = 0; y < info.height; y++) {
+        for (int x = 0; x < info.width; x++) {
+            uint32_t px = line[x];
+
+            int r = (px >> 16) & 0xFF;
+            int g = (px >> 8) & 0xFF;
+            int b = px & 0xFF;
+
+            // Apply contrast + brightness
+            r = (int) ((r - 128) * contrast + 128 + brightness);
+            g = (int) ((g - 128) * contrast + 128 + brightness);
+            b = (int) ((b - 128) * contrast + 128 + brightness);
+
+            // Clamp
+            r = r < 0 ? 0 : (r > 255 ? 255 : r);
+            g = g < 0 ? 0 : (g > 255 ? 255 : g);
+            b = b < 0 ? 0 : (b > 255 ? 255 : b);
+
+            line[x] = (0xFF << 24) | (r << 16) | (g << 8) | b;
+        }
+        line = (uint32_t *) ((char *) line + info.stride);
+    }
+
+    AndroidBitmap_unlockPixels(env, bitmap);
+}
+
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_pwhs_cnative_ImageProcessor_vintage(JNIEnv *env, jobject, jobject bitmap) {
+
+    AndroidBitmapInfo info;
+    void *pixels;
+
+    AndroidBitmap_getInfo(env, bitmap, &info);
+    AndroidBitmap_lockPixels(env, bitmap, &pixels);
+
+    auto *line = (uint32_t *) pixels;
+
+    for (int y = 0; y < info.height; y++) {
+        for (int x = 0; x < info.width; x++) {
+            uint32_t px = line[x];
+
+            float r = (px >> 16) & 0xFF;
+            float g = (px >> 8) & 0xFF;
+            float b = px & 0xFF;
+
+            // 1) Giảm saturation
+            float gray = 0.3f * r + 0.59f * g + 0.11f * b;
+            r = r * 0.85f + gray * 0.15f;
+            g = g * 0.85f + gray * 0.15f;
+            b = b * 0.85f + gray * 0.15f;
+
+            // 2) Warm tone
+            r += 15;
+            b -= 10;
+
+            // 3) Fade effect (lift shadows)
+            r = r * 0.9f + 15;
+            g = g * 0.9f + 15;
+            b = b * 0.9f + 15;
+
+            // Clamp
+            int R = r < 0 ? 0 : (r > 255 ? 255 : (int)r);
+            int G = g < 0 ? 0 : (g > 255 ? 255 : (int)g);
+            int B = b < 0 ? 0 : (b > 255 ? 255 : (int)b);
+
+            line[x] = (0xFF << 24) | (R << 16) | (G << 8) | B;
+        }
+        line = (uint32_t *) ((char *) line + info.stride);
+    }
+
+    AndroidBitmap_unlockPixels(env, bitmap);
+}

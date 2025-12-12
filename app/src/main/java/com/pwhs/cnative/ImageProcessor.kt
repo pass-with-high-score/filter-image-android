@@ -12,4 +12,6 @@ class ImageProcessor {
     external fun grayscale(bitmap: Bitmap)
     external fun invert(bitmap: Bitmap)
     external fun blur(bitmap: Bitmap)
+    external fun brightnessContrast(bitmap: Bitmap, brightness: Int, contrast: Float)
+    external fun vintage(bitmap: Bitmap)
 }
