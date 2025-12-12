@@ -4,10 +4,12 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.pwhs.cnative.databinding.ActivityMainBinding
+import org.opencv.android.OpenCVLoader
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -44,6 +46,17 @@ class MainActivity : AppCompatActivity() {
         binding.toolbar.apply {
             title = "C++ Image Filters"
             setTitleTextColor(getColor(android.R.color.white))
+        }
+
+        // Source - https://stackoverflow.com/a
+// Posted by Bonins, modified by community. See post 'Timeline' for change history
+// Retrieved 2025-12-12, License - CC BY-SA 4.0
+
+        val ocvLoaded = OpenCVLoader.initDebug()
+        if (ocvLoaded) {
+            Toast.makeText(this@MainActivity, "OpenCV loaded", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this@MainActivity, "Unable to load OpenCV", Toast.LENGTH_SHORT).show();
         }
 
         setupButtons()

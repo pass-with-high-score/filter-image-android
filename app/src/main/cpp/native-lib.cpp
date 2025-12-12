@@ -3,6 +3,9 @@
 #include <android/log.h>
 #include <android/bitmap.h>
 #include <cmath>
+#include <opencv2/opencv.hpp>
+
+using namespace cv;
 
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "native-lib::", __VA_ARGS__)
 extern "C" JNIEXPORT void JNICALL
@@ -191,9 +194,9 @@ Java_com_pwhs_cnative_ImageProcessor_vintage(JNIEnv *env, jobject, jobject bitma
             b = b * 0.9f + 15;
 
             // Clamp
-            int R = r < 0 ? 0 : (r > 255 ? 255 : (int)r);
-            int G = g < 0 ? 0 : (g > 255 ? 255 : (int)g);
-            int B = b < 0 ? 0 : (b > 255 ? 255 : (int)b);
+            int R = r < 0 ? 0 : (r > 255 ? 255 : (int) r);
+            int G = g < 0 ? 0 : (g > 255 ? 255 : (int) g);
+            int B = b < 0 ? 0 : (b > 255 ? 255 : (int) b);
 
             line[x] = (0xFF << 24) | (R << 16) | (G << 8) | B;
         }
