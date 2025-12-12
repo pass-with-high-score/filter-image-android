@@ -173,6 +173,18 @@
 
         <!-- Reset Button -->
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRemoveBackground"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:text="Remove Background"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            app:cornerRadius="12dp"
+            style="@style/Widget.Material3.Button.IconButton.Filled"/>
+
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnReset"
             android:layout_width="match_parent"
             android:layout_height="48dp"

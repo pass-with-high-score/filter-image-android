@@ -9,6 +9,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.pwhs.cnative.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.opencv.android.OpenCVLoader
 
 class MainActivity : AppCompatActivity() {
@@ -92,6 +95,10 @@ class MainActivity : AppCompatActivity() {
             applyFilter { imageProcessor.vintage(it) }
         }
 
+        binding.btnRemoveBackground.setOnClickListener {
+            removeBackground()
+        }
+
         binding.btnReset.setOnClickListener {
             currentBitmap = originalBitmap?.copy(Bitmap.Config.ARGB_8888, true)
             binding.imageView.setImageBitmap(currentBitmap)
@@ -143,6 +150,16 @@ class MainActivity : AppCompatActivity() {
 
         filteredBitmap = bmp
         applyBC()  // update preview
+    }
+
+    private fun removeBackground() {
+        val src = originalBitmap ?: return
+
+        val bmp = src.copy(Bitmap.Config.ARGB_8888, true)
+        imageProcessor.removeBackgroundAuto(bmp)
+
+        currentBitmap = bmp
+        binding.imageView.setImageBitmap(bmp)
     }
 
 

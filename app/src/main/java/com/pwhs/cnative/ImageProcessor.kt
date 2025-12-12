@@ -14,4 +14,6 @@ class ImageProcessor {
     external fun blur(bitmap: Bitmap)
     external fun brightnessContrast(bitmap: Bitmap, brightness: Int, contrast: Float)
     external fun vintage(bitmap: Bitmap)
+    external fun removeBackground(bitmap: Bitmap)
+    external fun removeBackgroundAuto(bitmap: Bitmap)
 }
